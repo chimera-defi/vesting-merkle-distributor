@@ -8,13 +8,24 @@ import "./interfaces/IMerkleDistributor.sol";
 contract MerkleDistributor is IMerkleDistributor {
     address public immutable override token;
     bytes32 public immutable override merkleRoot;
+    uint256 public immutable vestingPeriod;
+
+    uint256 public total_allocated_supply;
+
+    mapping(address => uint256) initial_locked;
+    mapping(address => uint256) total_claimed;
+    mapping(address => uint256) start_time;
+    mapping(address => uint256) end_time;
 
     // This is a packed array of booleans.
     mapping(uint256 => uint256) private claimedBitMap;
 
-    constructor(address token_, bytes32 merkleRoot_) public {
+
+    constructor(address token_, bytes32 merkleRoot_, uint256 vestingPeriod_) public {
         token = token_;
         merkleRoot = merkleRoot_;
+        vestingPeriod = vestingPeriod_;
+        total_allocated_supply = 0;
     }
 
     function isClaimed(uint256 index) public view override returns (bool) {
@@ -31,17 +42,50 @@ contract MerkleDistributor is IMerkleDistributor {
         claimedBitMap[claimedWordIndex] = claimedBitMap[claimedWordIndex] | (1 << claimedBitIndex);
     }
 
-    function claim(uint256 index, address account, uint256 amount, bytes32[] calldata merkleProof) external override {
+    function _allocateShares(address account, uint256 amount) private {
+        require((IERC20(token).balanceOf(address(this)) - (total_allocated_supply + amount)) > 0, 'MerkleDistributor: Inadequate contract balance');
+        initial_locked[account] = amount;
+        total_claimed[account] = 0;
+        start_time[account] = block.timestamp;
+        end_time[account] = block.timestamp + vestingPeriod;
+        total_allocated_supply += amount;
+    }
+
+    function claimShares(uint256 index, address account, uint256 amount, bytes32[] calldata merkleProof) external override {
         require(!isClaimed(index), 'MerkleDistributor: Drop already claimed.');
 
         // Verify the merkle proof.
         bytes32 node = keccak256(abi.encodePacked(index, account, amount));
         require(MerkleProof.verify(merkleProof, merkleRoot, node), 'MerkleDistributor: Invalid proof.');
 
-        // Mark it claimed and send the token.
+        // Mark it claimed and begin vesting account.
         _setClaimed(index);
-        require(IERC20(token).transfer(account, amount), 'MerkleDistributor: Transfer failed.');
+        _allocateShares(account, amount);
 
-        emit Claimed(index, account, amount);
+        emit ClaimedShares(index, account, amount);
+    }
+
+    function _total_vested_of(address account) public view returns (uint256) {
+        uint256 start = start_time[account];
+        uint256 end = end_time[account];
+        uint256 locked = initial_locked[account];
+        uint256 t = block.timestamp;
+        if(t < start){
+            return 0;
+        }
+        uint256 result = locked * ((t - start) / (end - start));
+        if(result < locked) {
+            return result;
+        } else {
+            return locked;
+        }
+    }
+
+    function claim(address account) external override {
+        uint256 claimable = _total_vested_of(account) - total_claimed[account];
+        total_claimed[account] += claimable;
+        require(IERC20(token).transfer(account, claimable), 'MerkleDistributor: Transfer failed.');
+
+        emit claimed(account, claimable);
     }
 }

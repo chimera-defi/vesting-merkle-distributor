@@ -1,0 +1,69 @@
+Arguments: 
+  /home/pico/.nvm/versions/node/v14.7.0/bin/node /sbin/yarn
+
+PATH: 
+  /home/pico/.nvm/versions/node/v14.7.0/bin:/home/pico/.local/bin:/sbin:/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/home/pico/.bin:/usr/lib/jvm/default/bin:/home/pico/go/bin
+
+Yarn version: 
+  1.22.10
+
+Node version: 
+  14.7.0
+
+Platform: 
+  linux x64
+
+Trace: 
+  SyntaxError: /home/pico/Projects/VestedMerkleDistributor/package.json: Unexpected token / in JSON at position 485
+      at JSON.parse (<anonymous>)
+      at /usr/lib/node_modules/yarn/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/usr/lib/node_modules/yarn/lib/cli.js:310:30)
+      at /usr/lib/node_modules/yarn/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "vestedmerkledistributor",
+    "version": "1.0.0",
+    "description": "Distributes ERC20 linearly over time.",
+    "main": "truffle-config.js",
+    "directories": {
+      "test": "test"
+    },
+    "scripts": {
+      "test": "truffle test"
+    },
+    "author": "Nate Brune",
+    "license": "ISC",
+    "devDependencies": {
+      "@openzeppelin/contracts": "3.1.0",
+      "@types/chai": "^4.2.6",
+      "@types/mocha": "^5.2.7",
+      "axios": "^0.20.0",
+      "chai": "^4.2.0",
+      "commander": "^6.1.0",
+      //"ethereum-waffle": "^3.0.0",
+      "ethereumjs-util": "^7.0.4",
+      "mocha": "^6.2.2",
+      "prettier": "^2.0.5",
+      "rimraf": "^3.0.0",
+      "solc": "0.6.11",
+      "ts-node": "^8.5.4",
+      "typescript": "^3.7.3"
+    },
+    "scripts": {
+      "precompile": "rimraf ./build/",
+      "compile": "waffle",
+      "pretest": "yarn compile",
+      "test": "mocha",
+      "generate-merkle-root": "ts-node scripts/generate-merkle-root.ts",
+      "generate-merkle-root:example": "ts-node scripts/generate-merkle-root.ts --input scripts/example.json",
+      "prepublishOnly": "yarn test"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
