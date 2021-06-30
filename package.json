@@ -8,9 +8,9 @@
   },
   "scripts": {
     "precompile": "rimraf ./build/",
-    "compile": "waffle",
+    "compile": "truffle compile",
     "pretest": "yarn compile",
-    "test": "mocha",
+    "test": "truffle test",
     "generate-merkle-root": "ts-node scripts/generate-merkle-root.ts",
     "generate-merkle-root:example": "ts-node scripts/generate-merkle-root.ts --input scripts/example.json",
     "prepublishOnly": "yarn test"
