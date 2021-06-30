@@ -68,7 +68,7 @@ contract MerkleDistributor is IMerkleDistributor {
         emit ClaimedShares(index, account, amount);
     }
 
-    function total_vested_of(address account) public view returns (uint) {
+    function getTotalVestedOf(address account) public view returns (uint) {
         uint256 start = start_time[account];
         uint256 locked = initial_locked[account];
         uint256 t = block.timestamp;
@@ -100,7 +100,7 @@ contract MerkleDistributor is IMerkleDistributor {
     }
 
     function claim(address account) external override {
-        uint256 claimable = total_vested_of(account).sub(total_claimed[account]);
+        uint256 claimable = getTotalVestedOf(account).sub(total_claimed[account]);
         total_claimed[account] = total_claimed[account].add(claimable);
         require(IERC20(token).transfer(account, claimable), 'MerkleDistributor: Transfer failed.');
 

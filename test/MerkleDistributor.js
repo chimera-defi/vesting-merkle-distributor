@@ -48,7 +48,7 @@ contract("MerkleDistributor", accounts => {
     // Advance forward to claim half of shares.
     await advanceBlockAtTime(halfway_point);
 
-    var vested_after = await merkle.total_vested_of("0x5A553d59435Df0688fd5dEa1aa66C7430541ffB3");
+    var vested_after = await merkle.getTotalVestedOf("0x5A553d59435Df0688fd5dEa1aa66C7430541ffB3");
     assert.equal(vested_after, user_locked/2, "Vesting schedule incorrect: Shares should be halfway unlocked.")
     
     await merkle.claim("0x5A553d59435Df0688fd5dEa1aa66C7430541ffB3");
@@ -61,7 +61,7 @@ contract("MerkleDistributor", accounts => {
     // Advance the rest of the way 
     await advanceBlockAtTime(halfway_point + (STAKING_PERIOD/2));
 
-    vested_after = await merkle.total_vested_of("0x5A553d59435Df0688fd5dEa1aa66C7430541ffB3");
+    vested_after = await merkle.getTotalVestedOf("0x5A553d59435Df0688fd5dEa1aa66C7430541ffB3");
     assert.equal(vested_after.toNumber(), user_locked, "Vesting schedule incorrect: Shares should be fully unlocked.")
     
     await merkle.claim("0x5A553d59435Df0688fd5dEa1aa66C7430541ffB3");
@@ -74,7 +74,7 @@ contract("MerkleDistributor", accounts => {
     // Advance too far make sure nothing else is unlocked
     await advanceBlockAtTime(halfway_point + (STAKING_PERIOD/2));
 
-    vested_after = await merkle.total_vested_of("0x5A553d59435Df0688fd5dEa1aa66C7430541ffB3");
+    vested_after = await merkle.getTotalVestedOf("0x5A553d59435Df0688fd5dEa1aa66C7430541ffB3");
     assert.equal(vested_after.toNumber(), user_locked, "Vesting schedule incorrect: initially locked shares and shares vested mismatch")
     
     await merkle.claim("0x5A553d59435Df0688fd5dEa1aa66C7430541ffB3");
@@ -102,7 +102,7 @@ contract("MerkleDistributor", accounts => {
     // Advance forward to claim half of shares.
     await advanceBlockAtTime(halfway_point);
 
-    var vested_after = await merkle.total_vested_of("0xB96cE59522314ACB1502Dc8d3e192995e36439c1");
+    var vested_after = await merkle.getTotalVestedOf("0xB96cE59522314ACB1502Dc8d3e192995e36439c1");
     assert.equal(vested_after.toNumber(), (userB_locked.toNumber()/2) , "Vesting schedule incorrect: Shares should be halfway unlocked.")
     
     await merkle.claim("0xB96cE59522314ACB1502Dc8d3e192995e36439c1");
@@ -115,7 +115,7 @@ contract("MerkleDistributor", accounts => {
     // Advance the rest of the way 
     await advanceBlockAtTime(halfway_point + (STAKING_PERIOD/2));
 
-    vested_after = await merkle.total_vested_of("0xB96cE59522314ACB1502Dc8d3e192995e36439c1");
+    vested_after = await merkle.getTotalVestedOf("0xB96cE59522314ACB1502Dc8d3e192995e36439c1");
     assert.equal(vested_after.toNumber(), userB_locked.toNumber(), "Vesting schedule incorrect: Shares should be fully unlocked.")
     
     await merkle.claim("0xB96cE59522314ACB1502Dc8d3e192995e36439c1");
