@@ -25,7 +25,7 @@ const advanceBlockAtTime = (time) => {
 };
 
 contract("MerkleDistributor", accounts => {
-  it("Should claim shares from merkle root", async function() {
+  it("Claim shares from merkle root", async function() {
     const token = await TestERC20.deployed(); 
     const merkle = await MerkleDistributor.deployed(); 
     await token.transfer(merkle.address, 99999999999999);
@@ -35,7 +35,7 @@ contract("MerkleDistributor", accounts => {
     assert.equal(await merkle.total_allocated_supply(), userA_locked.toNumber());
   });
 
-  it("Progress time and claim vested shares", async function() {
+  it("Claim vested shares over time", async function() {
     const token = await TestERC20.deployed(); 
     const merkle = await MerkleDistributor.deployed();
     
@@ -85,7 +85,7 @@ contract("MerkleDistributor", accounts => {
     assert.equal(user_token_bal.toNumber(), user_locked, "Token was not transfered on valid claim.")
   });
 
-  it("Should test claims for another party", async function() {
+  it("Claim shares for another party", async function() {
     const token = await TestERC20.deployed(); 
     const merkle = await MerkleDistributor.deployed();
 
