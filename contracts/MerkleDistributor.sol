@@ -18,7 +18,6 @@ contract MerkleDistributor is IMerkleDistributor {
     mapping(address => uint256) initial_locked;
     mapping(address => uint256) total_claimed;
     mapping(address => uint256) start_time;
-    mapping(address => uint256) end_time;
 
     // This is a packed array of booleans.
     mapping(uint256 => uint256) private claimedBitMap;
@@ -50,7 +49,6 @@ contract MerkleDistributor is IMerkleDistributor {
         initial_locked[account] = amount;
         total_claimed[account] = 0;
         start_time[account] = block.timestamp;
-        end_time[account] = vestingPeriod.add(block.timestamp);
         total_allocated_supply = total_allocated_supply.add(amount);
     }
 
@@ -85,10 +83,6 @@ contract MerkleDistributor is IMerkleDistributor {
 
     function getStartTime(address account) public view returns (uint256) {
         return start_time[account];
-    }
-
-    function getEndTime(address account) public view returns (uint256) {
-        return end_time[account];
     }
 
     function getTotalClaimed(address account) public view returns (uint256) {
