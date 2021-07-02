@@ -1,4 +1,4 @@
-# @NateBrune/merkle-distributor
+# @NateBrune/vesting-merkle-distributor
 Vests ERC20 tokens for multiple addresses over multiple vesting periods using a Merkle tree.
 
 Forked from Uniswap
